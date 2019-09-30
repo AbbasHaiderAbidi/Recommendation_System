@@ -27,41 +27,50 @@ def getReco( X, k ):
     # The dummy model simply stores the labels in decreasing order of their popularity
     in_path=""
     out_path="../eurlex/"
-    goto_dir="../../shallow"
-    model_dir = ""
+    goto_dir="../../../shallow/"
+    model_dir = "../../results/eurlex/"
     dump_food(X,in_path,out_path)
+    os.system("pwd")
     os.system("cd "+goto_dir)
+    # os.system("make clean")
+    # os.system("make")
+    os.system("pwd")
     os.system("bash sample_run.sh")
     # npzModel = np.load( "model.npz" )
     # model = npzModel[npzModel.files[0]]
     print("SUCCESS")
 
-    filename = model_dir + "/score_mat"
+    filename = model_dir + "score_mat"
     #print(dummy)
     #dump_svmlight_file( X, dummy, "%s.X" % file, multilabel = True, zero_based = True, comment = "%d %d" % (n, d) )
     Xp, _ = load_svmlight_file( "%s.txt" % filename, multilabel = True, n_features = L, offset = 0 )
     #print(Xp[1:3])
     #print(Xp)
-    yPred = np.ndarray( shape=( n, k ), dtype=int )
+    # yPred = np.ndarray( shape=( n, k ), dtype=int )
+    yPred = np.zeros( (n, k), dtype=int )
     for ind, user in enumerate(Xp):
         d = user.data
         i = user.indices
         #print("Data: ", d, "\nIndices: ", i)    
         xf = np.vstack( (i, d) ).T
-        xf.sort( axis=1 )
-        #print("Sorted array: ", xf)
-        yPred[ind] = xf[:k, 1]
+        xf = xf[xf[:,1].argsort()[::-1]]
+        # print("Sorted array: ", xf)
+        for j in range(0,k):
+            yPred[ind][j]=xf[j][0]
+        # yPred[ind] = xf[:k , 0]
+        # print(yPred[ind])
 
     print(yPred)
+    print(yPred.shape)
 
-'''
+    '''
     # Let us predict a random subset of the 2k most popular labels no matter what the test point
     shortList = model[0:2*k]
     # Make sure we are returning a numpy nd-array and not a numpy matrix or a scipy sparse matrix
     yPred = np.zeros( (n, k) )
     for i in range( n ):
         yPred[i,:] = rand.permutation( shortList )[0:k]
-'''
+    '''
     return yPred
 
 
