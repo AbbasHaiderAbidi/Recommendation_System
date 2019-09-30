@@ -3,7 +3,7 @@ from numpy import random as rand
 from scipy import sparse as sps
 from sklearn.datasets import load_svmlight_file
 from sklearn.datasets import dump_svmlight_file
-
+import os
 # DO NOT CHANGE THE NAME OF THIS METHOD OR ITS INPUT OUTPUT BEHAVIOR
 
 # INPUT CONVENTION
@@ -22,22 +22,17 @@ from sklearn.datasets import dump_svmlight_file
 def getReco( X, k ):
     # Find out how many data points we have
     n = X.shape[0]
-    d = X.shape[1]
-    # f=open("tst_X_Xf.txt","w")
-    # f.write(str(n)+" "+str(d))
-
-    # f.write()
-    (n, d) = X.shape
-    # (n1, L) = y.shape
-    # assert n1 == n, "Mismatch in number of feature vectors and number of label vectors"
-    dummy = sps.csr_matrix((n,1))
-    dump_svmlight_file( X, dummy, "killbill.X" , multilabel = True, zero_based = True, comment = "%d %d"% (n, d) )
-    f=open()
-    # dump_svmlight_file( y, dummy, "%s.y" % filename, multilabel = True, zero_based = True, comment = "%d, %d" % (n, L) )
     # Load and unpack the dummy model
     # The dummy model simply stores the labels in decreasing order of their popularity
-    npzModel = np.load( "model.npz" )
-    model = npzModel[npzModel.files[0]]
+    in_path=""
+    out_path="../eurlex/"
+    goto_dir="../../shallow"
+    dump_food(X,in_path,out_path)
+    os.system("cd "+goto_dir)
+    os.system("bash sample_run.sh")
+    # npzModel = np.load( "model.npz" )
+    # model = npzModel[npzModel.files[0]]
+    print("SUCCESS")
     # Let us predict a random subset of the 2k most popular labels no matter what the test point
     shortList = model[0:2*k]
     # Make sure we are returning a numpy nd-array and not a numpy matrix or a scipy sparse matrix
@@ -45,3 +40,26 @@ def getReco( X, k ):
     for i in range( n ):
         yPred[i,:] = rand.permutation( shortList )[0:k]
     return yPred
+
+
+def dump_food( matrix_test, in_path, out_path):
+    (n, d) = matrix_test.shape
+    dummy = sps.csr_matrix( (n, 1) )
+    dump_svmlight_file( matrix_test, dummy, "test_data.X", multilabel = True, zero_based = True, comment = "%d %d" % (n, d) )   
+
+    test_ws=open(in_path+"test_data.X","r")
+    test_is=open(out_path+"tst_X_Y.txt","w")
+
+    for i in range(0,3):
+        test_ws.readline(); 
+
+    lines=test_ws.readlines()
+
+    lines[0]=lines[0][2:]
+    test_is.write(lines[0])
+    for i in range(1,len(lines)):
+        lines[i]=lines[i][1:]
+        test_is.write(lines[i])
+
+    test_is.close()
+
