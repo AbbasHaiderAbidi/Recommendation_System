@@ -22,23 +22,46 @@ import os
 def getReco( X, k ):
     # Find out how many data points we have
     n = X.shape[0]
+    L = 3400
     # Load and unpack the dummy model
     # The dummy model simply stores the labels in decreasing order of their popularity
     in_path=""
     out_path="../eurlex/"
     goto_dir="../../shallow"
+    model_dir = ""
     dump_food(X,in_path,out_path)
     os.system("cd "+goto_dir)
     os.system("bash sample_run.sh")
     # npzModel = np.load( "model.npz" )
     # model = npzModel[npzModel.files[0]]
     print("SUCCESS")
+
+    filename = model_dir + "/score_mat"
+    #print(dummy)
+    #dump_svmlight_file( X, dummy, "%s.X" % file, multilabel = True, zero_based = True, comment = "%d %d" % (n, d) )
+    Xp, _ = load_svmlight_file( "%s.txt" % filename, multilabel = True, n_features = L, offset = 0 )
+    #print(Xp[1:3])
+    #print(Xp)
+    yPred = np.ndarray( shape=( n, k ), dtype=int )
+    for ind, user in enumerate(Xp):
+        d = user.data
+        i = user.indices
+        #print("Data: ", d, "\nIndices: ", i)    
+        xf = np.vstack( (i, d) ).T
+        xf.sort( axis=1 )
+        #print("Sorted array: ", xf)
+        yPred[ind] = xf[:k, 1]
+
+    print(yPred)
+
+'''
     # Let us predict a random subset of the 2k most popular labels no matter what the test point
     shortList = model[0:2*k]
     # Make sure we are returning a numpy nd-array and not a numpy matrix or a scipy sparse matrix
     yPred = np.zeros( (n, k) )
     for i in range( n ):
         yPred[i,:] = rand.permutation( shortList )[0:k]
+'''
     return yPred
 
 
