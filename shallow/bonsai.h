@@ -9,6 +9,7 @@ that is an internal node can have mutiple children
 (instead of only two in parabel) */
 
 #pragma once
+//pragma once is used so that we only compile this file once
 
 #include <iostream>
 #include <vector>

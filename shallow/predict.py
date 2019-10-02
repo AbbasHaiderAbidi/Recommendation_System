@@ -43,7 +43,8 @@ def getReco( X, k ):
     filename = model_dir + "score_mat"
     #print(dummy)
     #dump_svmlight_file( X, dummy, "%s.X" % file, multilabel = True, zero_based = True, comment = "%d %d" % (n, d) )
-    Xp, _ = load_svmlight_file( "%s.txt" % filename, multilabel = True, n_features = L, offset = 0 )
+    print(filename + "score_mat.txt")
+    Xp, _ = load_svmlight_file( "%s.txt" %filename, multilabel = True, n_features = L, offset = 1 )
     #print(Xp[1:3])
     #print(Xp)
     # yPred = np.ndarray( shape=( n, k ), dtype=int )
