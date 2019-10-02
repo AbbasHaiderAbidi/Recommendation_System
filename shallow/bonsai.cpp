@@ -448,7 +448,7 @@ void solve_l2r_l1l2_svc( SMatF* X_Xf, _int* y, _float *w, _float eps, _float Cp,
   delete [] alpha;
   delete [] index;
 }
-
+//svm is taking X, y 
 SMatF* svms( SMatF* trn_X_Xf, SMatF* trn_Y_X, Param& param )
 {
   _float eps = 0.1;
@@ -511,7 +511,7 @@ void reindex_rows( SMatF* mat, _int nr, VecI& rows )
 	mat->data[i][j].first = rows[ mat->data[i][j].first ];
     }
 }
-
+//dims gives user which has 1's 
 thread_local _bool* mask; // shared among threads?
 void active_dims( SMatF* mat, VecI& insts, VecI& dims, _llint& nnz )
 {
@@ -545,7 +545,7 @@ void active_dims( SMatF* mat, VecI& insts, VecI& dims, _llint& nnz )
 }
 
 ///////////////////// Modified_code_start /////////////////////
-
+// gives a matrix where we have no. of centres as column, and on x axis is users, each data is = pair< indice number of Y_X,1>
 SMatF* partition_to_assign_mat( SMatF* Y_X, VecI& partition)
 {
   _int num_Y = Y_X->nc;
@@ -763,7 +763,7 @@ void kmeans( SMatF* mat, _float acc, VecI& partition, _int K) {
       best_sim = 0;
       best_center = 0;
       for( _int i=0; i<K; i++){
-	// cout << "cosines[i][j]=" << cosines[i][j] << endl;;
+	// cout << "cosines[i][j]=" << cosines[i][j] << endl;
 	if(cosines[i][j] > best_sim){
 	  best_sim = cosines[i][j];
 	  best_center = i;
@@ -1211,6 +1211,7 @@ void unzip(
         b[i] = zipped[i].second;
     }
 }
+
 void update_next_level( _int b, vector<Node*>& nodes, SMatF* score_mat, SMatI* id_type_mat, Param& param )
 {
   // put value in score_mat->data to node->X

@@ -460,7 +460,7 @@ public:
 		_int* size = mat.size;
 		pairIF** data = mat.data;
 
-		//fout<<nc<<" "<<nr<<endl;
+		fout<<nc<<" "<<nr<<endl;
 
 		fout << fixed << setprecision( 6 );
 		for(_int i=0; i<nc; i++)
